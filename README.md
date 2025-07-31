@@ -16,86 +16,6 @@ A fast and reliable automation script that logs into Stremio and triggers the Tr
 - Chromium browser: `sudo apt install chromium-browser`
 - A Stremio account with Trakt integration enabled
 
-## Quick Start
-
-1. **Clone this repository:**
-```bash
-git clone https://github.com/Shaun2177/stremio-import.git
-cd stremio-import
-```
-
-2. **Install dependencies and Chromium:**
-```bash
-bun install
-sudo apt install chromium-browser
-```
-
-3. **Create your `.env` file:**
-```bash
-cp .env.example .env
-# Then edit .env with your credentials:
-EMAIL=your_email@example.com
-PASSWORD=your_stremio_password
-SCHEDULE_SECONDS=7200
-```
-
-4. **Start the automation:**
-```bash
-bun start
-```
-
-**Note for ARM64 users (Apple Silicon, ARM servers):** If you get an `ENOEXEC` error, see the [ARM64 Support](#arm64-support-apple-silicon-arm-servers) section below.
-
-The script will now run continuously in the background, automatically clicking the Stremio import button every 2 hours.
-
-## Running as a System Service (systemd)
-
-For production servers, you can run the script as a systemd service to ensure it starts automatically and runs continuously:
-
-1. **Copy the service file:**
-```bash
-sudo cp stremio-import.service /etc/systemd/system/
-```
-
-2. **Edit the service file paths (if needed):**
-```bash
-sudo nano /etc/systemd/system/stremio-import.service
-```
-Update the `User`, `WorkingDirectory`, and `EnvironmentFile` paths to match your setup.
-
-3. **Enable and start the service:**
-```bash
-sudo systemctl daemon-reload
-sudo systemctl enable stremio-import.service
-sudo systemctl start stremio-import.service
-```
-
-4. **Check service status:**
-```bash
-sudo systemctl status stremio-import.service
-```
-
-5. **View logs:**
-```bash
-sudo journalctl -u stremio-import.service -f
-```
-
-The service will automatically restart if it crashes and will start on system boot.
-
-## Configuration
-
-### Scheduling Options
-Control how often the import button is clicked by setting `SCHEDULE_SECONDS` in your `.env` file:
-
-```bash
-SCHEDULE_SECONDS=1800    # Click import button every 30 minutes
-SCHEDULE_SECONDS=3600    # Click import button every 1 hour  
-SCHEDULE_SECONDS=7200    # Click import button every 2 hours (default)
-SCHEDULE_SECONDS=21600   # Click import button every 6 hours
-```
-
-The script runs continuously and will automatically perform the import operation at your specified interval.
-
 ### Sample Output
 ```
 🚀 Stremio Import Scheduler
@@ -111,15 +31,6 @@ The script runs continuously and will automatically perform the import operation
 
 ℹ Next run: 1/31/2025, 2:30:15 PM
 [Script continues running in background...]
-```
-
-## Alternative Runtimes
-
-### Using npm instead of bun
-If you prefer npm (script still runs continuously):
-```bash
-npm install
-npm start
 ```
 
 ## How it Works
@@ -141,45 +52,6 @@ The script will keep running until you stop it manually.
 - **"SPA navigation detected"**: This is normal behavior - the script continues automatically
 - **"Please set EMAIL and PASSWORD"**: Check your `.env` file has correct EMAIL and PASSWORD values
 - **Login fails**: Verify your Stremio credentials are correct
-- **Script won't start**: Make sure you have Bun installed and run `bun install` first
-- **ARM64/Apple Silicon Issues**: See ARM64 setup below
-
-### ARM64 Support (Apple Silicon, ARM servers)
-
-If you're getting `ENOEXEC` errors on ARM64 systems, install Chromium manually:
-
-**Ubuntu/Debian ARM64:**
-```bash
-# Install Chromium for ARM64 (recommended)
-sudo apt update
-sudo apt install chromium-browser
-
-# Set environment variable to use system Chromium
-export PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
-export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-
-# Then run the script
-bun start
-```
-
-**macOS Apple Silicon:**
-```bash
-# Install Chrome via Homebrew
-brew install --cask google-chrome
-
-# Set environment variable
-export PUPPETEER_EXECUTABLE_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-
-# Then run the script
-bun start
-```
-
-**Alternatively, add to your `.env` file:**
-```bash
-PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
-PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-```
 
 ## Requirements
 
