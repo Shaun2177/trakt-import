@@ -13,6 +13,7 @@ A fast and reliable automation script that logs into Stremio and triggers the Tr
 ## Prerequisites
 
 - Bun runtime (install from [bun.sh](https://bun.sh))
+- Chromium browser: `sudo apt install chromium-browser`
 - A Stremio account with Trakt integration enabled
 
 ## Quick Start
@@ -23,9 +24,10 @@ git clone https://github.com/Shaun2177/stremio-import.git
 cd stremio-import
 ```
 
-2. **Install dependencies:**
+2. **Install dependencies and Chromium:**
 ```bash
 bun install
+sudo apt install chromium-browser
 ```
 
 3. **Create your `.env` file:**
@@ -42,7 +44,43 @@ SCHEDULE_SECONDS=7200
 bun start
 ```
 
+**Note for ARM64 users (Apple Silicon, ARM servers):** If you get an `ENOEXEC` error, see the [ARM64 Support](#arm64-support-apple-silicon-arm-servers) section below.
+
 The script will now run continuously in the background, automatically clicking the Stremio import button every 2 hours.
+
+## Running as a System Service (systemd)
+
+For production servers, you can run the script as a systemd service to ensure it starts automatically and runs continuously:
+
+1. **Copy the service file:**
+```bash
+sudo cp stremio-import.service /etc/systemd/system/
+```
+
+2. **Edit the service file paths (if needed):**
+```bash
+sudo nano /etc/systemd/system/stremio-import.service
+```
+Update the `User`, `WorkingDirectory`, and `EnvironmentFile` paths to match your setup.
+
+3. **Enable and start the service:**
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable stremio-import.service
+sudo systemctl start stremio-import.service
+```
+
+4. **Check service status:**
+```bash
+sudo systemctl status stremio-import.service
+```
+
+5. **View logs:**
+```bash
+sudo journalctl -u stremio-import.service -f
+```
+
+The service will automatically restart if it crashes and will start on system boot.
 
 ## Configuration
 
@@ -104,50 +142,51 @@ The script will keep running until you stop it manually.
 - **"Please set EMAIL and PASSWORD"**: Check your `.env` file has correct EMAIL and PASSWORD values
 - **Login fails**: Verify your Stremio credentials are correct
 - **Script won't start**: Make sure you have Bun installed and run `bun install` first
+- **ARM64/Apple Silicon Issues**: See ARM64 setup below
+
+### ARM64 Support (Apple Silicon, ARM servers)
+
+If you're getting `ENOEXEC` errors on ARM64 systems, install Chromium manually:
+
+**Ubuntu/Debian ARM64:**
+```bash
+# Install Chromium for ARM64 (recommended)
+sudo apt update
+sudo apt install chromium-browser
+
+# Set environment variable to use system Chromium
+export PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+
+# Then run the script
+bun start
+```
+
+**macOS Apple Silicon:**
+```bash
+# Install Chrome via Homebrew
+brew install --cask google-chrome
+
+# Set environment variable
+export PUPPETEER_EXECUTABLE_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+
+# Then run the script
+bun start
+```
+
+**Alternatively, add to your `.env` file:**
+```bash
+PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
+PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+```
 
 ## Requirements
 
 - **Bun Runtime**: Fast JavaScript runtime and package manager
+- **Chromium Browser**: Install with `sudo apt install chromium-browser`
 - **Stremio Account**: You need a valid Stremio account
 - **Trakt Integration**: Enable Trakt in your Stremio account settings before running this script
-
-## Running as a Service
-
-### Linux/macOS (systemd)
-Create a systemd service file to run automatically:
-
-```bash
-# Create service file
-sudo nano /etc/systemd/system/stremio-import.service
-```
-
-Add this content:
-```ini
-[Unit]
-Description=Stremio Import Automation
-After=network.target
-
-[Service]
-Type=simple
-User=your-username
-WorkingDirectory=/path/to/stremio-import
-ExecStart=/usr/local/bin/bun start
-Restart=always
-RestartSec=10
-Environment=NODE_ENV=production
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Enable and start:
-```bash
-sudo systemctl enable stremio-import
-sudo systemctl start stremio-import
-```
-
-### Windows
-Use Task Scheduler or run in a persistent terminal window.
 
 ## Disclaimer
 
