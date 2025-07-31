@@ -15,19 +15,21 @@ const colors = {
 };
 
 const log = {
-    info: (msg) => console.log(`${colors.blue}ℹ${colors.reset} ${msg}`),
+    info: (msg) => console.log(`${colors.blue}ℹ ${colors.reset} ${msg}`),
     success: (msg) => console.log(`${colors.green}✓${colors.reset} ${msg}`),
     warning: (msg) => console.log(`${colors.yellow}⚠${colors.reset} ${msg}`),
     error: (msg) => console.log(`${colors.red}✗${colors.reset} ${msg}`),
-    header: (msg) => console.log(`\n${colors.bright}${colors.magenta}${msg}${colors.reset}`)
+    header: (msg) => console.log(`\n${colors.bright}${colors.magenta}${msg}${colors.reset}`),
+    divider: () => console.log(`${colors.dim}${'─'.repeat(60)}${colors.reset}`)
 };
 
 // Load environment variables (you can install dotenv package for .env file support)
-const USERNAME = process.env.USERNAME;
+const EMAIL = process.env.EMAIL;
 const PASSWORD = process.env.PASSWORD;
+const SCHEDULE_SECONDS = parseInt(process.env.SCHEDULE_SECONDS) || 7200; // Default to 7200 seconds (2 hours)
 
-if (!USERNAME || !PASSWORD) {
-    log.error('Please set USERNAME and PASSWORD environment variables.');
+if (!EMAIL || !PASSWORD) {
+    log.error('Please set EMAIL and PASSWORD environment variables.');
     process.exit(1);
 }
 
@@ -47,7 +49,7 @@ async function run() {
         await page.goto('https://www.stremio.com/login', { waitUntil: 'domcontentloaded' });
         await page.waitForSelector('#email');
         await page.waitForSelector('#password');
-        await page.type('#email', USERNAME);
+        await page.type('#email', EMAIL);
         await page.type('#password', PASSWORD);
 
         // Sign in
@@ -108,8 +110,44 @@ async function run() {
 
         const totalTime = ((Date.now() - startTime) / 1000).toFixed(1);
         log.success(`Completed in ${totalTime}s`);
+        log.divider();
     }
-} run().catch((error) => {
-    log.error(`Fatal error: ${error.message}`);
+}
+
+function getNextRunTime(seconds) {
+    const next = new Date();
+    next.setSeconds(next.getSeconds() + seconds);
+    return next.toLocaleString();
+}
+
+function formatDuration(seconds) {
+    if (seconds < 60) return `${seconds} seconds`;
+    if (seconds < 3600) return `${Math.round(seconds / 60)} minutes`;
+    return `${Math.round(seconds / 3600)} hours`;
+}
+
+async function scheduler() {
+    log.header('🚀 Stremio Import Scheduler');
+
+    log.info(`Scheduled to run every ${formatDuration(SCHEDULE_SECONDS)}`);
+    log.info(`Next run: ${getNextRunTime(SCHEDULE_SECONDS)}`);
+
+    // Run immediately on start
+    await run();
+
+    // Schedule recurring runs
+    setInterval(async () => {
+        try {
+            log.info(`Next run: ${getNextRunTime(SCHEDULE_SECONDS)}`);
+            await run();
+        } catch (error) {
+            log.error(`Scheduled run failed: ${error.message}`);
+            // Don't exit, continue with next scheduled run
+        }
+    }, SCHEDULE_SECONDS * 1000); // Convert seconds to milliseconds
+}
+
+scheduler().catch((error) => {
+    log.error(`Scheduler failed: ${error.message}`);
     process.exit(1);
 });

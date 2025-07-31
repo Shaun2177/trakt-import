@@ -34,19 +34,28 @@ npm install
 
 3. Create a `.env` file in the root directory:
 ```bash
+EMAIL=your_email@example.com
 PASSWORD=your_stremio_password
-EMAIL=your_stremio_email
+SCHEDULE_SECONDS=7200
 ```
-
-4. Update the `USERNAME` in `index.js` with your email address.
 
 ## Usage
 
-Run the script:
+### Run Once
 ```bash
-bun index.js
+bun start
 # or
 npm start
+```
+
+### Run on Schedule (Continuous)
+The script will automatically run every `SCHEDULE_SECONDS` (default: 7200 seconds = 2 hours):
+```bash
+# Runs every 2 hours continuously (7200 seconds)
+SCHEDULE_SECONDS=7200
+
+# Runs every hour continuously (3600 seconds)
+SCHEDULE_SECONDS=3600
 ```
 
 The script will:
