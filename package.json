@@ -1,0 +1,20 @@
+{
+  "name": "stremio-import-automation",
+  "version": "1.0.0",
+  "description": "A fast and reliable automation script for Stremio Trakt import functionality",
+  "main": "index.js",
+  "scripts": {
+    "start": "bun index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/stremio-import.git"
+  },
+  "homepage": "https://github.com/yourusername/stremio-import#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "puppeteer": "^24.15.0"
+  }
+}
