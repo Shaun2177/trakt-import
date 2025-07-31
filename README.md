@@ -8,82 +8,76 @@ A fast and reliable automation script that logs into Stremio and triggers the Tr
 - 🎯 **Reliable clicking** - Smart scrolling and fallback mechanisms ensure buttons are properly clicked
 - ⏱️ **Performance tracking** - Built-in timing to monitor script execution speed
 - 🔒 **Secure** - Uses environment variables for sensitive credentials
-- 🤖 **Headless support** - Can run with or without browser UI
+- 🐳 **Docker ready** - Easy deployment with Docker and Docker Compose
 
 ## Prerequisites
 
-- Node.js (v14 or higher)
-- Bun runtime (recommended) or npm
-- A Stremio account
-- A Trakt account
+- Docker and Docker Compose
+- A Stremio account with Trakt integration enabled
 
-## Installation
+## Quick Start (Recommended)
 
-1. Clone this repository:
+1. **Clone this repository:**
 ```bash
-git clone https://github.com/yourusername/stremio-import.git
+git clone https://github.com/Shaun2177/stremio-import.git
 cd stremio-import
 ```
 
-2. Install dependencies:
-```bash
-bun install
-# or
-npm install
-```
-
-3. Create a `.env` file in the root directory:
+2. **Create a `.env` file:**
 ```bash
 EMAIL=your_email@example.com
 PASSWORD=your_stremio_password
 SCHEDULE_SECONDS=7200
 ```
 
-## Usage
-
-### Run Once
+3. **Start the automation:**
 ```bash
-bun start
-# or
-npm start
+docker compose up -d
 ```
 
-### Run on Schedule (Continuous)
-The script will automatically run every `SCHEDULE_SECONDS` (default: 7200 seconds = 2 hours):
+4. **View logs:**
 ```bash
-# Runs every 2 hours continuously (7200 seconds)
-SCHEDULE_SECONDS=7200
-
-# Runs every hour continuously (3600 seconds)
-SCHEDULE_SECONDS=3600
+docker logs -f stremio-import
 ```
 
-### Docker Usage
-
-#### Quick Start with Docker Compose (Recommended)
-1. Create a `.env` file:
+5. **Stop when needed:**
 ```bash
-EMAIL=your_email@example.com
-PASSWORD=your_stremio_password
-SCHEDULE_SECONDS=7200
+docker stop stremio-import
 ```
 
-2. Run with Docker Compose:
+That's it! The script will now run every 2 hours automatically.
+
+## Configuration
+
+### Scheduling Options
+Control how often the script runs by setting `SCHEDULE_SECONDS` in your `.env` file:
+
 ```bash
-docker-compose up -d
+SCHEDULE_SECONDS=1800    # 30 minutes
+SCHEDULE_SECONDS=3600    # 1 hour  
+SCHEDULE_SECONDS=7200    # 2 hours (default)
+SCHEDULE_SECONDS=21600   # 6 hours
 ```
 
-3. View logs:
-```bash
-docker-compose logs -f
+### Sample Output
+```
+🚀 Stremio Import Scheduler
+ℹ Scheduled to run every 2 hours
+ℹ Next run: 1/31/2025, 12:30:15 PM
+
+🎬 Stremio Import Automation
+✓ Logged in
+✓ Import button clicked
+✓ Import timestamp reset
+✓ Completed in 8.4s
+────────────────────────────────────────────────────────
 ```
 
-4. Stop the container:
-```bash
-docker-compose down
-```
+## Advanced Usage
 
-#### Manual Docker Commands
+### Manual Docker Commands
+If you prefer not to use Docker Compose:
+
 ```bash
 # Build the image
 docker build -t stremio-import .
@@ -104,38 +98,52 @@ docker logs -f stremio-import
 docker stop stremio-import && docker rm stremio-import
 ```
 
-The script will:
-1. Log into your Stremio account
-2. Navigate to account settings
-3. Click the Trakt import button
-4. Reset the `lastTraktImport` localStorage value to force a new import
-5. Display the total execution time
+### Local Development (Advanced)
+If you want to run without Docker:
 
-## Configuration
+**Prerequisites:** Node.js (v14+), npm/bun
 
-### Running in headless mode
-Change `headless: false` to `headless: true` in `index.js` for faster execution without browser UI.
+```bash
+# Install dependencies
+npm install
 
-### Adjusting timeouts
-You can modify the timeout values in the script:
-- Page load timeout: `waitUntil: 'domcontentloaded'`
-- Navigation timeout: `timeout: 5000`
-- Scroll delays: `setTimeout(resolve, 500)`
+# Run locally
+npm start
+```
 
-## How it works
+## How it Works
 
-1. **Login Process**: Automatically fills in credentials and handles the login flow
-2. **Smart Navigation**: Uses optimized page load strategies for faster execution
-3. **Reliable Clicking**: Scrolls elements into view and uses fallback click methods
-4. **localStorage Manipulation**: Resets the Trakt import timestamp to trigger a fresh import
+The script automatically:
+1. **Logs into your Stremio account** using your credentials
+2. **Navigates to account settings** 
+3. **Clicks the Trakt import button** to trigger synchronization
+4. **Resets the import timestamp** in localStorage to force a fresh import
+5. **Schedules the next run** based on your configuration
 
 ## Troubleshooting
 
 ### Common Issues
 
-- **"Navigation error or SPA detected"**: This is normal for single-page applications. The script continues automatically.
-- **"Import button not found"**: Make sure you have Trakt integration enabled in your Stremio account.
-- **Login fails**: Check your credentials in the `.env` file and `index.js`.
+- **"Import button not found"**: Make sure you have Trakt integration enabled in your Stremio account settings
+- **"SPA navigation detected"**: This is normal behavior - the script continues automatically
+- **Container won't start**: Check your `.env` file has correct EMAIL and PASSWORD values
+- **Login fails**: Verify your Stremio credentials are correct
+
+### Useful Commands
+
+```bash
+# Check if container is running
+docker ps
+
+# View container logs
+docker logs -f stremio-import
+```
+
+## Requirements
+
+- **Stremio Account**: You need a valid Stremio account
+- **Trakt Integration**: Enable Trakt in your Stremio account settings before running this script
+- **Docker**: Required for the easiest setup experience
 
 ## Disclaimer
 
