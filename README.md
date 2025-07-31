@@ -58,6 +58,52 @@ SCHEDULE_SECONDS=7200
 SCHEDULE_SECONDS=3600
 ```
 
+### Docker Usage
+
+#### Quick Start with Docker Compose (Recommended)
+1. Create a `.env` file:
+```bash
+EMAIL=your_email@example.com
+PASSWORD=your_stremio_password
+SCHEDULE_SECONDS=7200
+```
+
+2. Run with Docker Compose:
+```bash
+docker-compose up -d
+```
+
+3. View logs:
+```bash
+docker-compose logs -f
+```
+
+4. Stop the container:
+```bash
+docker-compose down
+```
+
+#### Manual Docker Commands
+```bash
+# Build the image
+docker build -t stremio-import .
+
+# Run the container
+docker run -d \
+  --name stremio-import \
+  --restart unless-stopped \
+  -e EMAIL=your_email@example.com \
+  -e PASSWORD=your_password \
+  -e SCHEDULE_SECONDS=7200 \
+  stremio-import
+
+# View logs
+docker logs -f stremio-import
+
+# Stop and remove
+docker stop stremio-import && docker rm stremio-import
+```
+
 The script will:
 1. Log into your Stremio account
 2. Navigate to account settings
