@@ -23,8 +23,10 @@ git clone https://github.com/Shaun2177/stremio-import.git
 cd stremio-import
 ```
 
-2. **Create a `.env` file:**
+2. **Edit your a `.env.example` file:**
 ```bash
+mv .env.example .env
+# Then edit .env with your credentials:
 EMAIL=your_email@example.com
 PASSWORD=your_stremio_password
 SCHEDULE_SECONDS=7200
