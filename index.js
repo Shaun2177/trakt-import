@@ -126,8 +126,15 @@ async function run() {
 
 function getNextRunTime(seconds) {
     const next = new Date();
-    next.setSeconds(next.getSeconds() + seconds);
-    return next.toLocaleString();
+    next.setTime(next.getTime() + (seconds * 1000)); // Add milliseconds instead of seconds
+
+    const day = String(next.getDate()).padStart(2, '0');
+    const month = String(next.getMonth() + 1).padStart(2, '0');
+    const year = next.getFullYear();
+    const hours = String(next.getHours()).padStart(2, '0');
+    const minutes = String(next.getMinutes()).padStart(2, '0');
+
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
 }
 
 function formatDuration(seconds) {
@@ -140,6 +147,7 @@ async function scheduler() {
     log.header('🚀 Stremio Import Scheduler');
 
     log.info(`Scheduled to run every ${formatDuration(SCHEDULE_SECONDS)}`);
+    log.info(`First run: Starting now...`);
     log.info(`Next run: ${getNextRunTime(SCHEDULE_SECONDS)}`);
 
     // Run immediately on start
@@ -148,8 +156,8 @@ async function scheduler() {
     // Schedule recurring runs
     setInterval(async () => {
         try {
-            log.info(`Next run: ${getNextRunTime(SCHEDULE_SECONDS)}`);
             await run();
+            log.info(`Next run: ${getNextRunTime(SCHEDULE_SECONDS)}`);
         } catch (error) {
             log.error(`Scheduled run failed: ${error.message}`);
             // Don't exit, continue with next scheduled run
