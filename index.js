@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 
 // Load environment variables (you can install dotenv package for .env file support)
-const USERNAME = process.env.USERNAME; // Update this with your email
+const USERNAME = process.env.USERNAME;
 const PASSWORD = process.env.PASSWORD;
 
 if (!USERNAME || !PASSWORD) {

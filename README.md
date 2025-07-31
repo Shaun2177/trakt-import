@@ -82,28 +82,10 @@ You can modify the timeout values in the script:
 - **"Import button not found"**: Make sure you have Trakt integration enabled in your Stremio account.
 - **Login fails**: Check your credentials in the `.env` file and `index.js`.
 
-### Performance Tips
-
-- Use headless mode for fastest execution
-- Ensure stable internet connection
-- Close other browser instances to free up resources
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## Disclaimer
 
 This script is for educational and personal use only. Please respect Stremio's terms of service and use responsibly. The authors are not responsible for any misuse of this tool.
 
 ## Support
 
-If you encounter any issues or have questions, please [open an issue](https://github.com/yourusername/stremio-import/issues) on GitHub.
+If you encounter any issues or have questions, please [open an issue](https://github.com/Shaun2177/stremio-import/issues) on GitHub.
