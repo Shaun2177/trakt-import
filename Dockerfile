@@ -1,10 +1,22 @@
 # Use Debian slim as base for ARM compatibility
 FROM debian:bookworm-slim
 
-# Install minimal packages for Puppeteer and Bun
+# Install required packages for Puppeteer and Bun
 RUN apt-get update && apt-get install -y \
     curl \
+    unzip \
     chromium \
+    ca-certificates \
+    fonts-liberation \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libdrm2 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
+    libgbm1 \
+    libxss1 \
+    libnss3 \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
