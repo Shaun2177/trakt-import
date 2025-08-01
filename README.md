@@ -107,12 +107,21 @@ node index.js
 | `EMAIL` | Your Stremio account email | **Required** |
 | `PASSWORD` | Your Stremio account password | **Required** |
 | `SCHEDULE_SECONDS` | Interval between runs (in seconds) | `7200` (2 hours) |
+| `TZ` | Container timezone for logs and scheduling | `Europe/London` |
 
 ### Common Schedule Examples:
 - `3600` = 1 hour
 - `7200` = 2 hours (default)
 - `21600` = 6 hours
 - `86400` = 24 hours (daily)
+
+### Common Timezone Examples:
+- `Europe/London` = UK time (GMT/BST)
+- `America/New_York` = US Eastern time
+- `America/Los_Angeles` = US Pacific time
+- `Europe/Paris` = Central European time
+- `Asia/Tokyo` = Japan time
+- `UTC` = Coordinated Universal Time
 
 ## 📊 Sample Output
 

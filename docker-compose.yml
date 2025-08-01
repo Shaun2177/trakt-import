@@ -7,4 +7,5 @@ services:
       - EMAIL=your-stremio-email@example.com
       - PASSWORD=your-stremio-password
       - SCHEDULE_SECONDS=7200
+      - TZ=Europe/London
     restart: unless-stopped
