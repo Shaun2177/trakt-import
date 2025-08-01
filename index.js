@@ -20,13 +20,18 @@ const log = {
     warning: (msg) => console.log(`${colors.yellow}⚠${colors.reset} ${msg}`),
     error: (msg) => console.log(`${colors.red}✗${colors.reset} ${msg}`),
     header: (msg) => console.log(`\n${colors.bright}${colors.magenta}${msg}${colors.reset}`),
-    divider: () => console.log(`${colors.dim}${'─'.repeat(60)}${colors.reset}`)
+    divider: () => process.stdout.write(`${colors.dim}${'─'.repeat(60)}${colors.reset}`)
 };
 
-// Load environment variables (you can install dotenv package for .env file support)
+// Load environment variables
 const EMAIL = process.env.EMAIL;
 const PASSWORD = process.env.PASSWORD;
 const SCHEDULE_SECONDS = parseInt(process.env.SCHEDULE_SECONDS) || 7200; // Default to 7200 seconds (2 hours)
+
+// Set environment variables for headless server operation (globally, once)
+process.env.DISPLAY = process.env.DISPLAY || ':99';
+process.env.CHROME_DEVEL_SANDBOX = '/usr/lib/chromium-browser/chrome-sandbox';
+process.env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = 'true';
 
 if (!EMAIL || !PASSWORD) {
     log.error('Please set EMAIL and PASSWORD environment variables.');
@@ -38,23 +43,14 @@ async function run() {
 
     log.header('🎬 Stremio Import Automation');
 
-    // Set environment variables for headless server operation
-    process.env.DISPLAY = process.env.DISPLAY || ':99';
-    process.env.CHROME_DEVEL_SANDBOX = '/usr/lib/chromium-browser/chrome-sandbox';
-
     const browser = await puppeteer.launch({
         headless: true,
-        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium-browser',
+        // executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium-browser',
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
             '--disable-dev-shm-usage',
-            '--disable-gpu',
-            '--disable-web-security',
-            '--disable-features=VizDisplayCompositor',
-            '--no-first-run',
-            '--disable-default-apps',
-            '--disable-extensions'
+            '--disable-gpu'
         ]
     });
     const page = await browser.newPage();
@@ -149,6 +145,7 @@ function formatDuration(seconds) {
 }
 
 async function scheduler() {
+    log.divider();
     log.header('🚀 Stremio Import Scheduler');
 
     log.info(`Scheduled to run every ${formatDuration(SCHEDULE_SECONDS)}`);
@@ -162,7 +159,6 @@ async function scheduler() {
     setInterval(async () => {
         try {
             await run();
-            log.info(`Next run: ${getNextRunTime(SCHEDULE_SECONDS)}`);
         } catch (error) {
             log.error(`Scheduled run failed: ${error.message}`);
             // Don't exit, continue with next scheduled run
