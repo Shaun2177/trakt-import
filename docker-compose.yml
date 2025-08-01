@@ -1,6 +1,7 @@
 services:
   stremio-import:
     build: .
+    container_name: stremio-import
     environment:
       - EMAIL=your-stremio-email@example.com
       - PASSWORD=your-stremio-password
