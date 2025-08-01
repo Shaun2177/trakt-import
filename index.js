@@ -38,6 +38,10 @@ async function run() {
 
     log.header('🎬 Stremio Import Automation');
 
+    // Set environment variables for headless server operation
+    process.env.DISPLAY = process.env.DISPLAY || ':99';
+    process.env.CHROME_DEVEL_SANDBOX = '/usr/lib/chromium-browser/chrome-sandbox';
+
     const browser = await puppeteer.launch({
         headless: true,
         executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium-browser',
@@ -45,11 +49,12 @@ async function run() {
             '--no-sandbox',
             '--disable-setuid-sandbox',
             '--disable-dev-shm-usage',
-            '--disable-accelerated-2d-canvas',
+            '--disable-gpu',
+            '--disable-web-security',
+            '--disable-features=VizDisplayCompositor',
             '--no-first-run',
-            '--no-zygote',
-            '--single-process',
-            '--disable-gpu'
+            '--disable-default-apps',
+            '--disable-extensions'
         ]
     });
     const page = await browser.newPage();
