@@ -1,6 +1,7 @@
 services:
   stremio-import:
     build: .
+    image: stremio-import:latest
     container_name: stremio-import
     environment:
       - EMAIL=your-stremio-email@example.com
