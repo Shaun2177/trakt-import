@@ -31,13 +31,13 @@ environment:
 ### Step 3: Run with Docker Compose
 ```bash
 # Build and start the container
-docker-compose up -d
+docker compose up -d
 
 # View logs
-docker-compose logs -f
+docker logs stremio-import
 
 # Stop the container
-docker-compose down
+docker stop stremio-import
 ```
 
 That's it! The script will now run automatically every 2 hours (or your configured interval).
@@ -118,7 +118,6 @@ node index.js
 
 ```
 ────────────────────────────────────────────────────────
-
 🚀 Stremio Import Scheduler
 
 ℹ  Scheduled to run every 2 hours
@@ -129,7 +128,7 @@ node index.js
 ✓ Logged in
 ✓ Import button clicked
 ✓ Import timestamp reset
-✓ Completed in 8.2s
+✓ Completed in 4.2s
 ────────────────────────────────────────────────────────
 ```
 
@@ -146,13 +145,13 @@ node index.js
 ### Docker Issues
 ```bash
 # Check if container is running
-docker-compose ps
+docker ps
 
 # View detailed logs
-docker-compose logs stremio-import
+docker logs stremio-import
 
 # Restart the container
-docker-compose restart
+docker restart stremio-import
 ```
 
 ### Common Problems
@@ -161,7 +160,7 @@ docker-compose restart
 |---------|----------|
 | "Import button not found" | Enable Trakt integration in Stremio settings first |
 | "Login failed" | Double-check your EMAIL and PASSWORD in docker-compose.yml |
-| "Container won't start" | Check Docker logs: `docker-compose logs` |
+| "Container won't start" | Check Docker logs: `docker logs stremio-import` |
 | "SPA navigation detected" | This is normal - script continues automatically |
 
 ### Manual Run Issues
