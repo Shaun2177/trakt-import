@@ -4,7 +4,7 @@ services:
   stremio-import:
     build: .
     environment:
-      - EMAIL=${EMAIL}
-      - PASSWORD=${PASSWORD}
-      - SCHEDULE_SECONDS=${SCHEDULE_SECONDS:-7200}
+      - EMAIL=your-stremio-email@example.com
+      - PASSWORD=your-stremio-password
+      - SCHEDULE_SECONDS=7200
     restart: unless-stopped

@@ -1,69 +1,199 @@
-# Stremio Import Automation
+# 🎬 Stremio Import Automation
 
-A fast and reliable automation script that logs into Stremio and triggers the Trakt import functionality by resetting the import timestamp.
+Automated script that logs into Stremio and triggers Trakt import functionality by resetting the import timestamp. Runs continuously in the background on a configurable schedule.
 
-## Features
+## ✨ Features
 
-- 🚀 **Fast execution** - Optimized for speed with minimal wait times
-- 🎯 **Reliable clicking** - Smart scrolling and fallback mechanisms ensure buttons are properly clicked
-- ⏱️ **Performance tracking** - Built-in timing to monitor script execution speed
-- 🔒 **Secure** - Uses environment variables for sensitive credentials
-- ⚡ **Bun powered** - Uses Bun runtime for lightning-fast performance
+- � **Docker-first** - One command deployment with Docker Compose
+- 🚀 **Fast & Lightweight** - Minimal Docker image for quick builds
+- ⏱️ **Scheduled runs** - Configurable interval (default: 2 hours)
+- 🎯 **Reliable** - Smart error handling and retry mechanisms
+- 📊 **Clear logging** - Beautiful colored output with timing
+- 🔒 **Secure** - Environment-based credential management
 
-## Prerequisites
+## 🚀 Quick Start (Recommended: Docker Compose)
 
-- Bun runtime (install from [bun.sh](https://bun.sh))
-- Chromium browser: `sudo apt install chromium-browser`
-- A Stremio account with Trakt integration enabled
-
-### Sample Output
+### Step 1: Clone the repository
+```bash
+git clone https://github.com/Shaun2177/stremio-import.git
+cd stremio-import
 ```
+
+### Step 2: Configure your credentials
+Edit the `docker-compose.yml` file and replace the placeholder values:
+```yaml
+environment:
+  - EMAIL=your-actual-stremio-email@example.com
+  - PASSWORD=your-actual-stremio-password
+  - SCHEDULE_SECONDS=7200  # Run every 2 hours
+```
+
+### Step 3: Run with Docker Compose
+```bash
+# Build and start the container
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop the container
+docker-compose down
+```
+
+That's it! The script will now run automatically every 2 hours (or your configured interval).
+
+## 🔧 Alternative Method (Manual Setup)
+
+If you can't use Docker, you can run it manually with Node.js/Bun:
+
+### Step 1: Install Prerequisites
+```bash
+# Install Bun (recommended - faster)
+curl -fsSL https://bun.sh/install | bash
+
+# OR install Node.js (if you prefer)
+# Download from https://nodejs.org
+```
+
+### Step 2: Install Chromium
+```bash
+# On Ubuntu/Debian
+sudo apt update
+sudo apt install chromium-browser
+
+# On macOS
+brew install chromium
+
+# On Windows
+# Download from https://www.chromium.org/getting-involved/download-chromium
+```
+
+### Step 3: Clone and Setup
+```bash
+git clone https://github.com/Shaun2177/stremio-import.git
+cd stremio-import
+
+# Install dependencies
+bun install
+# OR with npm: npm install
+```
+
+### Step 4: Set Environment Variables
+```bash
+# On Linux/macOS
+export EMAIL="your-stremio-email@example.com"
+export PASSWORD="your-stremio-password"
+export SCHEDULE_SECONDS=7200
+
+# On Windows PowerShell
+$env:EMAIL="your-stremio-email@example.com"
+$env:PASSWORD="your-stremio-password"
+$env:SCHEDULE_SECONDS=7200
+```
+
+### Step 5: Run the Script
+```bash
+# With Bun (recommended)
+bun run index.js
+
+# OR with Node.js
+node index.js
+```
+
+## 📋 Configuration Options
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `EMAIL` | Your Stremio account email | **Required** |
+| `PASSWORD` | Your Stremio account password | **Required** |
+| `SCHEDULE_SECONDS` | Interval between runs (in seconds) | `7200` (2 hours) |
+
+### Common Schedule Examples:
+- `3600` = 1 hour
+- `7200` = 2 hours (default)
+- `21600` = 6 hours
+- `86400` = 24 hours (daily)
+
+## 📊 Sample Output
+
+```
+────────────────────────────────────────────────────────
+
 🚀 Stremio Import Scheduler
-ℹ Scheduled to run every 2 hours
-ℹ Next run: 1/31/2025, 12:30:15 PM
+
+ℹ  Scheduled to run every 2 hours
+ℹ  First run: Starting now...
+ℹ  Next run: 01/08/2025 14:30
 
 🎬 Stremio Import Automation
 ✓ Logged in
 ✓ Import button clicked
 ✓ Import timestamp reset
-✓ Completed in 8.4s
+✓ Completed in 8.2s
 ────────────────────────────────────────────────────────
-
-ℹ Next run: 1/31/2025, 2:30:15 PM
-[Script continues running in background...]
 ```
 
-## How it Works
+## 🔍 How It Works
 
-The script runs continuously in the background and automatically:
-1. **Logs into your Stremio account** using your credentials
-2. **Navigates to account settings** 
-3. **Clicks the Trakt import button** to trigger synchronization
-4. **Resets the import timestamp** in localStorage to force a fresh import
-5. **Waits for the specified interval** then repeats the process
+1. **Logs into Stremio** using your credentials
+2. **Navigates to account settings** page
+3. **Finds and clicks the Trakt import button**
+4. **Resets the localStorage timestamp** to force fresh import
+5. **Waits for configured interval** then repeats
 
-The script will keep running until you stop it manually.
+## 🛠️ Troubleshooting
 
-## Troubleshooting
+### Docker Issues
+```bash
+# Check if container is running
+docker-compose ps
 
-### Common Issues
+# View detailed logs
+docker-compose logs stremio-import
 
-- **"Import button not found"**: Make sure you have Trakt integration enabled in your Stremio account settings
-- **"SPA navigation detected"**: This is normal behavior - the script continues automatically
-- **"Please set EMAIL and PASSWORD"**: Check your `.env` file has correct EMAIL and PASSWORD values
-- **Login fails**: Verify your Stremio credentials are correct
+# Restart the container
+docker-compose restart
+```
 
-## Requirements
+### Common Problems
 
-- **Bun Runtime**: Fast JavaScript runtime and package manager
-- **Chromium Browser**: Install with `sudo apt install chromium-browser`
-- **Stremio Account**: You need a valid Stremio account
-- **Trakt Integration**: Enable Trakt in your Stremio account settings before running this script
+| Problem | Solution |
+|---------|----------|
+| "Import button not found" | Enable Trakt integration in Stremio settings first |
+| "Login failed" | Double-check your EMAIL and PASSWORD in docker-compose.yml |
+| "Container won't start" | Check Docker logs: `docker-compose logs` |
+| "SPA navigation detected" | This is normal - script continues automatically |
 
-## Disclaimer
+### Manual Run Issues
+- **Missing Chromium**: Install with `sudo apt install chromium-browser`
+- **Environment variables not set**: Export them in your shell before running
+- **Permission issues**: Make sure you have write access to the project directory
 
-This script is for educational and personal use only. Please respect Stremio's terms of service and use responsibly. The authors are not responsible for any misuse of this tool.
+## 📋 Prerequisites
 
-## Support
+### For Docker Method (Recommended):
+- Docker and Docker Compose installed
+- Your Stremio account credentials
 
-If you encounter any issues or have questions, please [open an issue](https://github.com/Shaun2177/stremio-import/issues) on GitHub.
+### For Manual Method:
+- Bun runtime OR Node.js (14+)
+- Chromium browser installed
+- Your Stremio account credentials
+
+## ⚠️ Important Notes
+
+- **Enable Trakt first**: Make sure Trakt integration is enabled in your Stremio account settings
+- **Respect rate limits**: Don't set SCHEDULE_SECONDS too low (minimum recommended: 1800 seconds)
+- **Keep credentials secure**: Never commit your actual credentials to version control
+
+## 📜 License & Disclaimer
+
+This tool is for personal use only. Please respect Stremio's terms of service. The authors are not responsible for any misuse of this tool.
+
+## 🤝 Support
+
+Having issues? [Open an issue](https://github.com/Shaun2177/stremio-import/issues) on GitHub with:
+- Your operating system
+- Docker version (if using Docker)
+- Error logs/screenshots
+- Steps you've already tried
