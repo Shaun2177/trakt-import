@@ -1,8 +1,8 @@
 services:
-  stremio-import:
+  trakt-import:
     build: .
-    image: stremio-import:latest
-    container_name: stremio-import
+    image: trakt-import:latest
+    container_name: trakt-import
     environment:
       - EMAIL=your-stremio-email@example.com
       - PASSWORD=your-stremio-password

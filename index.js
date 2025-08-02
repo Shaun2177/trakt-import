@@ -43,7 +43,7 @@ let isFirstRun = true;
 async function run() {
     const startTime = Date.now();
 
-    log.header('🎬 Stremio Import Automation');
+    log.header('🎬 Trakt Import to Stremio Automation');
     if (!isFirstRun) {
         log.info(`Next run: ${getNextRunTime(SCHEDULE_SECONDS)}`);
     }
@@ -154,7 +154,7 @@ function formatDuration(seconds) {
 
 async function scheduler() {
     log.divider();
-    log.header('🚀 Stremio Import Scheduler');
+    log.header('🚀 Trakt Import to Stremio Scheduler');
 
     log.info(`Scheduled to run every ${formatDuration(SCHEDULE_SECONDS)}`);
     log.info(`First run: Starting now...`);

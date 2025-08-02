@@ -1,4 +1,4 @@
-# 🎬 Stremio Import Automation
+# 🎬 Trakt Import to Stremio Automation
 
 Automated script that logs into Stremio and triggers Trakt import functionality by resetting the import timestamp. Runs continuously in the background on a configurable schedule.
 
@@ -127,13 +127,13 @@ node index.js
 
 ```
 ────────────────────────────────────────────────────────
-🚀 Stremio Import Scheduler
+🚀 Trakt Import to Stremio Scheduler
 
 ℹ  Scheduled to run every 2 hours
 ℹ  First run: Starting now...
 ℹ  Next run: 01/08/2025 14:30
 
-🎬 Stremio Import Automation
+🎬 Trakt Import to Stremio Automation
 ✓ Logged in
 ✓ Import button clicked
 ✓ Import timestamp reset
