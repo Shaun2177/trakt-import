@@ -37,6 +37,9 @@ docker compose up -d
 # View logs
 docker logs trakt-import
 
+# View logs with live updates
+docker logs -f trakt-import
+
 # Stop the container
 docker stop trakt-import
 ```
