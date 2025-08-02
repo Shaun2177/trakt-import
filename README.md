@@ -15,8 +15,8 @@ Automated script that logs into Stremio and triggers Trakt import functionality 
 
 ### Step 1: Clone the repository
 ```bash
-git clone https://github.com/Shaun2177/stremio-import.git
-cd stremio-import
+git clone https://github.com/Shaun2177/trakt-import.git
+cd trakt-import
 ```
 
 ### Step 2: Configure your credentials
@@ -26,6 +26,7 @@ environment:
   - EMAIL=your-actual-stremio-email@example.com
   - PASSWORD=your-actual-stremio-password
   - SCHEDULE_SECONDS=7200  # Run every 2 hours
+  - TZ=your_timezone (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List)
 ```
 
 ### Step 3: Run with Docker Compose
@@ -34,10 +35,10 @@ environment:
 docker compose up -d
 
 # View logs
-docker logs stremio-import
+docker logs trakt-import
 
 # Stop the container
-docker stop stremio-import
+docker stop trakt-import
 ```
 
 That's it! The script will now run automatically every 2 hours (or your configured interval).
@@ -70,8 +71,8 @@ brew install chromium
 
 ### Step 3: Clone and Setup
 ```bash
-git clone https://github.com/Shaun2177/stremio-import.git
-cd stremio-import
+git clone https://github.com/Shaun2177/trakt-import.git
+cd trakt-import
 
 # Install dependencies
 bun install
@@ -157,10 +158,10 @@ node index.js
 docker ps
 
 # View detailed logs
-docker logs stremio-import
+docker logs trakt-import
 
 # Restart the container
-docker restart stremio-import
+docker restart trakt-import
 ```
 
 ### Common Problems
@@ -169,7 +170,7 @@ docker restart stremio-import
 |---------|----------|
 | "Import button not found" | Enable Trakt integration in Stremio settings first |
 | "Login failed" | Double-check your EMAIL and PASSWORD in docker-compose.yml |
-| "Container won't start" | Check Docker logs: `docker logs stremio-import` |
+| "Container won't start" | Check Docker logs: `docker logs trakt-import` |
 | "SPA navigation detected" | This is normal - script continues automatically |
 
 ### Manual Run Issues
@@ -200,7 +201,7 @@ This tool is for personal use only. Please respect Stremio's terms of service. T
 
 ## 🤝 Support
 
-Having issues? [Open an issue](https://github.com/Shaun2177/stremio-import/issues) on GitHub with:
+Having issues? [Open an issue](https://github.com/Shaun2177/trakt-import/issues) on GitHub with:
 - Your operating system
 - Docker version (if using Docker)
 - Error logs/screenshots
