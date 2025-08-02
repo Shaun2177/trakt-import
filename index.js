@@ -38,10 +38,15 @@ if (!EMAIL || !PASSWORD) {
     process.exit(1);
 }
 
+let isFirstRun = true;
+
 async function run() {
     const startTime = Date.now();
 
     log.header('🎬 Stremio Import Automation');
+    if (!isFirstRun) {
+        log.info(`Next run: ${getNextRunTime(SCHEDULE_SECONDS)}`);
+    }
 
     const browser = await puppeteer.launch({
         headless: true,
@@ -122,6 +127,9 @@ async function run() {
         const totalTime = ((Date.now() - startTime) / 1000).toFixed(1);
         log.success(`Completed in ${totalTime}s`);
         log.divider();
+
+        // Mark that the first run is complete
+        isFirstRun = false;
     }
 }
 
