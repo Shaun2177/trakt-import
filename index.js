@@ -15,10 +15,10 @@ const colors = {
 };
 
 const log = {
-    info: (msg) => console.log(`${colors.blue}ℹ ${colors.reset} ${msg}`),
-    success: (msg) => console.log(`${colors.green}✓${colors.reset} ${msg}`),
-    warning: (msg) => console.log(`${colors.yellow}⚠${colors.reset} ${msg}`),
-    error: (msg) => console.log(`${colors.red}✗${colors.reset} ${msg}`),
+    info: (msg) => console.log(`${colors.blue} ℹ${colors.reset} ${msg}`),
+    success: (msg) => console.log(`${colors.green} ✓${colors.reset} ${msg}`),
+    warning: (msg) => console.log(`${colors.yellow} ⚠${colors.reset} ${msg}`),
+    error: (msg) => console.log(`${colors.red} ✗${colors.reset} ${msg}`),
     header: (msg) => console.log(`\n${colors.bright}${colors.magenta}${msg}${colors.reset}`),
     divider: () => process.stdout.write(`${colors.dim}${'─'.repeat(60)}${colors.reset}`)
 };
