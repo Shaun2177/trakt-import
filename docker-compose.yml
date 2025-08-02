@@ -7,5 +7,5 @@ services:
       - EMAIL=your-stremio-email@example.com
       - PASSWORD=your-stremio-password
       - SCHEDULE_SECONDS=7200
-      - TZ=Europe/London
+      - TZ=your_timezone (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List)
     restart: unless-stopped
