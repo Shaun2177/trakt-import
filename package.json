@@ -4,9 +4,7 @@
   "description": "A fast and reliable automation script for Stremio Trakt import functionality",
   "main": "index.js",
   "scripts": {
-    "start": "bun run index.js",
-    "dev": "bun run index.js",
-    "install-deps": "bun install"
+    "start": "bun run index.js"
   },
   "repository": {
     "type": "git",
