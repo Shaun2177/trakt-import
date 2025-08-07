@@ -152,6 +152,8 @@ function formatDuration(seconds) {
     return `${Math.round(seconds / 3600)} hours`;
 }
 
+let intervalId; // store the interval so we can clear it
+
 async function scheduler() {
     log.divider();
     log.header('🚀 Trakt Import to Stremio Scheduler');
@@ -164,7 +166,7 @@ async function scheduler() {
     await run();
 
     // Schedule recurring runs
-    setInterval(async () => {
+    intervalId = setInterval(async () => {
         try {
             await run();
         } catch (error) {
@@ -173,6 +175,15 @@ async function scheduler() {
         }
     }, SCHEDULE_SECONDS * 1000); // Convert seconds to milliseconds
 }
+
+function shutdownHandler(signal) {
+    log.warning(`Received ${signal}, shutting down...`);
+    if (intervalId) clearInterval(intervalId);
+    process.exit(0);
+}
+
+process.on('SIGTERM', () => shutdownHandler('SIGTERM'));
+process.on('SIGINT', () => shutdownHandler('SIGINT'));
 
 scheduler().catch((error) => {
     log.error(`Scheduler failed: ${error.message}`);
