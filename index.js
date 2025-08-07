@@ -39,6 +39,52 @@ if (!EMAIL || !PASSWORD) {
 }
 
 let isFirstRun = true;
+let isShuttingDown = false;
+let currentBrowser = null;
+let schedulerInterval = null;
+
+// Fast shutdown handler - prioritizes speed over cleanup
+function fastShutdown(signal) {
+    log.warning(`Received ${signal}. Shutting down immediately...`);
+
+    // Immediately stop accepting new work
+    isShuttingDown = true;
+
+    // Clear scheduler if it exists
+    if (schedulerInterval) {
+        clearInterval(schedulerInterval);
+    }
+
+    // Force kill browser process if it exists (don't wait for graceful close)
+    if (currentBrowser) {
+        try {
+            const process = currentBrowser.process();
+            if (process) {
+                process.kill('SIGKILL');
+            }
+        } catch (error) {
+            // Ignore errors, we're shutting down anyway
+        }
+    }
+
+    log.info('Shutdown complete');
+    process.exit(0);
+}
+
+// Register signal handlers for fast shutdown
+process.on('SIGTERM', fastShutdown);
+process.on('SIGINT', fastShutdown);
+
+// Handle uncaught exceptions to prevent hanging
+process.on('uncaughtException', (error) => {
+    log.error(`Uncaught exception: ${error.message}`);
+    process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    log.error(`Unhandled rejection at: ${promise}, reason: ${reason}`);
+    process.exit(1);
+});
 
 async function run() {
     const startTime = Date.now();
@@ -48,9 +94,14 @@ async function run() {
         log.info(`Next run: ${getNextRunTime(SCHEDULE_SECONDS)}`);
     }
 
+    if (isShuttingDown) {
+        log.info('Shutdown in progress, skipping run');
+        return;
+    }
+
     const browser = await puppeteer.launch({
         headless: true,
-        // executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium-browser',
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium-browser',
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
@@ -58,6 +109,9 @@ async function run() {
             '--disable-gpu'
         ]
     });
+
+    // Store browser reference for graceful shutdown
+    currentBrowser = browser;
     const page = await browser.newPage();
 
     try {
@@ -123,6 +177,7 @@ async function run() {
         throw error;
     } finally {
         await browser.close();
+        currentBrowser = null; // Clear the reference
 
         const totalTime = ((Date.now() - startTime) / 1000).toFixed(1);
         log.success(`Completed in ${totalTime}s`);
@@ -152,8 +207,6 @@ function formatDuration(seconds) {
     return `${Math.round(seconds / 3600)} hours`;
 }
 
-let intervalId; // store the interval so we can clear it
-
 async function scheduler() {
     log.divider();
     log.header('🚀 Trakt Import to Stremio Scheduler');
@@ -166,7 +219,12 @@ async function scheduler() {
     await run();
 
     // Schedule recurring runs
-    intervalId = setInterval(async () => {
+    schedulerInterval = setInterval(async () => {
+        if (isShuttingDown) {
+            log.info('Shutdown in progress, skipping scheduled run');
+            return;
+        }
+
         try {
             await run();
         } catch (error) {
@@ -175,15 +233,6 @@ async function scheduler() {
         }
     }, SCHEDULE_SECONDS * 1000); // Convert seconds to milliseconds
 }
-
-function shutdownHandler(signal) {
-    log.warning(`Received ${signal}, shutting down...`);
-    if (intervalId) clearInterval(intervalId);
-    process.exit(0);
-}
-
-process.on('SIGTERM', () => shutdownHandler('SIGTERM'));
-process.on('SIGINT', () => shutdownHandler('SIGINT'));
 
 scheduler().catch((error) => {
     log.error(`Scheduler failed: ${error.message}`);

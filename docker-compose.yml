@@ -9,3 +9,4 @@ services:
       - SCHEDULE_SECONDS=7200
       - TZ=your_timezone (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List)
     restart: unless-stopped
+    stop_grace_period: 1s
